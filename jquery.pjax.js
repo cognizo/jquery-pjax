@@ -728,6 +728,7 @@ var cacheBackStack    = []
 //
 // Returns nothing.
 function cachePush(id, value) {
+  return; // Hack to disable caching
   cacheMapping[id] = value
   cacheBackStack.push(id)
 
@@ -751,6 +752,7 @@ function cachePush(id, value) {
 //
 // Returns nothing.
 function cachePop(direction, id, value) {
+  return; // Hack to disable caching
   var pushStack, popStack
   cacheMapping[id] = value
 
