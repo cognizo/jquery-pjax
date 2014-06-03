@@ -313,7 +313,6 @@ function pjax(options) {
     fire('pjax:success', [data, status, xhr, options])
   }
 
-
   // Initialize pjax.state for the initial page load. Assume we're
   // using the container and options of the link we're loading for the
   // back button to the initial page. This ensures good back button
@@ -778,6 +777,33 @@ function findVersion() {
   }).attr('content')
 }
 
+// Allow external JS to use pushState in a way that will play nice with pjax.
+function pushState(url, title, container) {
+    // Initialize pjax.state for the initial page load.
+    if (!pjax.state) {
+        pjax.state = {
+            id: uniqueId() - 1,
+            url: window.location.href,
+            title: document.title,
+            container: container,
+            fragment: null,
+            timeout: $.pjax.defaults.timeout
+        };
+        window.history.replaceState(pjax.state, document.title);
+    }
+
+    pjax.state = {
+        id: uniqueId(),
+        url: url,
+        title: title,
+        container: container,
+        fragment: null,
+        timeout: $.pjax.defaults.timeout
+    };
+
+    window.history.pushState(pjax.state, title, url);
+}
+
 // Install pjax functions on $.pjax to enable pushState behavior.
 //
 // Does nothing if already enabled.
@@ -795,6 +821,7 @@ function enable() {
   $.pjax.click = handleClick
   $.pjax.submit = handleSubmit
   $.pjax.reload = pjaxReload
+  $.pjax.pushState = pushState
   $.pjax.defaults = {
     timeout: 650,
     push: true,
@@ -827,6 +854,7 @@ function disable() {
   $.pjax.click = $.noop
   $.pjax.submit = $.noop
   $.pjax.reload = function() { window.location.reload() }
+  $.pjax.pushState = $.noop
 
   $(window).off('popstate.pjax', onPjaxPopstate)
 }
