@@ -1,2 +1,1 @@
-window.evaledSrcScript = true
-window.evaledScriptLoaded()
+window.externalScriptLoaded()
